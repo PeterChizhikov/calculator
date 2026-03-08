@@ -62,38 +62,40 @@ void parseValues(int argc,char** argv, mathInfo &info)
 
 void printValues(mathInfo &info)
 {
-
-
+    printf("Result: %d\n", info.result);
 }
 
 void calculateValues(mathInfo &info)
 {
+    int operationStatus;
 	if(info.operation == '+')
 {
-	mathOperations::sum(info.firstNum. info.secondNum, info.result);
+	operationStatus =mathOperations::sum(info.firstNum. info.secondNum, info.result);
 
 }
         if(info.operation == '-')
 {
-mathOperations::subtract(info.firstNum. info.secondNum, info.result);
+    operationStatus = mathOperations::subtract(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '*')
 {
-mathOperations::multiply(info.firstNum. info.secondNum, info.result);
+    operationStatus =mathOperations::multiply(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '/')
 {
-mathOperations::divide(info.firstNum. info.secondNum, info.result);
+    operationStatusmathOperations::divide(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '!')
 {
-mathOperations::factorial(info.firstNum. info.secondNum, info.result);
+    operationStatusmathOperations::factorial(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '^')
 {
-mathOperations::pow(info.firstNum. info.secondNum, info.result);
+    operationStatusmathOperations::pow(info.firstNum. info.secondNum, info.result);
 }
-
+    if(operationStatus == 0) printf("Операция выполнена успешно!\n");
+    else if(operationStatus == 1) printf("Ошибка в операции!\n");
+    else if(operationStatus == 2) printf("Переполнение типа!\n");
 }
 
 void checkValues(mathInfo &info)
