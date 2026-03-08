@@ -1,7 +1,7 @@
 #include <iostream>
 #include <getopt.h>
 #include <cstdio>
-
+#include "mathFunctions.h"
 
 struct mathInfo{
     int firstNum=0;
@@ -68,7 +68,31 @@ void printValues(mathInfo &info)
 
 void calculateValues(mathInfo &info)
 {
+	if(info.operation == '+')
+{
+	mathOperations::sum(info.firstNum. info.secondNum, info.result);
 
+}
+        if(info.operation == '-')
+{
+mathOperations::subtract(info.firstNum. info.secondNum, info.result);
+}
+        if(info.operation == '*')
+{
+mathOperations::multiply(info.firstNum. info.secondNum, info.result);
+}
+        if(info.operation == '/')
+{
+mathOperations::divide(info.firstNum. info.secondNum, info.result);
+}
+        if(info.operation == '!')
+{
+mathOperations::factorial(info.firstNum. info.secondNum, info.result);
+}
+        if(info.operation == '^')
+{
+mathOperations::pow(info.firstNum. info.secondNum, info.result);
+}
 
 }
 
