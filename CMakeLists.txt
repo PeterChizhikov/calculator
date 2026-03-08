@@ -28,7 +28,6 @@ endif()
 
 find_program(CLANG_TIDY NAMES clang-tidy clang-tidy-18 clang-tidy-17 clang-tidy-16)
 if(CLANG_TIDY)
-    set(CLANG_TIDY_CHECKS "-checks=*,-fuchsia-*,-hicpp-*,-readability-magic-numbers")
     add_custom_target(tidy
         COMMAND ${CLANG_TIDY} ${SOURCE_FILES} -- -I${CMAKE_CURRENT_SOURCE_DIR} -std=c++17
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
