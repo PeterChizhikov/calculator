@@ -83,15 +83,15 @@ void calculateValues(mathInfo &info)
 }
         if(info.operation == '/')
 {
-    operationStatusmathOperations::divide(info.firstNum. info.secondNum, info.result);
+    mathOperations::divide(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '!')
 {
-    operationStatusmathOperations::factorial(info.firstNum. info.secondNum, info.result);
+    mathOperations::factorial(info.firstNum. info.secondNum, info.result);
 }
         if(info.operation == '^')
 {
-    operationStatusmathOperations::pow(info.firstNum. info.secondNum, info.result);
+    mathOperations::pow(info.firstNum. info.secondNum, info.result);
 }
     if(operationStatus == 0) printf("Операция выполнена успешно!\n");
     else if(operationStatus == 1) printf("Ошибка в операции!\n");
