@@ -2,6 +2,25 @@ cmake_minimum_required(VERSION 3.10)
 
 project(Calculator)
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+
+set(COMPILE_COMMANDS_LINK "${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json")
+set(COMPILE_COMMANDS_FILE "${CMAKE_BINARY_DIR}/compile_commands.json")
+if(UNIX)
+    if(EXISTS "${COMPILE_COMMANDS_LINK}")
+        if(NOT IS_SYMLINK "${COMPILE_COMMANDS_LINK}")
+            file(REMOVE "${COMPILE_COMMANDS_LINK}")
+        endif()
+    endif()
+    if(NOT EXISTS "${COMPILE_COMMANDS_LINK}")
+        execute_process(
+            COMMAND ${CMAKE_COMMAND} -E create_symlink "${COMPILE_COMMANDS_FILE}" "${COMPILE_COMMANDS_LINK}"
+            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        )
+    endif()
+endif()
+
+set(SOURCE_FILES main.cpp)
 
 include(FetchContent)
 
@@ -11,12 +30,13 @@ FetchContent_Declare(
     GIT_TAG main
 )
 FetchContent_MakeAvailable(mathLib)
-add_executable(calc main.cpp)
+add_executable(calc ${SOURCE_FILES})
 target_link_libraries(calc PRIVATE mathLib)
+
+install(TARGETS calc RUNTIME DESTINATION bin)
 
 find_program(CLANG_FORMAT NAMES clang-format clang-format-18 clang-format-17 clang-format-16)
 if(CLANG_FORMAT)
-    set(SOURCE_FILES main.cpp)
     add_custom_target(format
         COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
@@ -28,11 +48,19 @@ endif()
 
 find_program(CLANG_TIDY NAMES clang-tidy clang-tidy-18 clang-tidy-17 clang-tidy-16)
 if(CLANG_TIDY)
+    set(TIDY_SOURCES "")
+    foreach(F ${SOURCE_FILES})
+        list(APPEND TIDY_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/${F})
+    endforeach()
     add_custom_target(tidy
-        COMMAND ${CLANG_TIDY} ${SOURCE_FILES} -- -I${CMAKE_CURRENT_SOURCE_DIR} -std=c++17
-        WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+        COMMAND ${CLANG_TIDY} ${TIDY_SOURCES}
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
         COMMENT "Running clang-tidy on sources"
     )
 else()
     message(WARNING "clang-tidy not found. Target 'tidy' will not be available.")
+endif()
+
+if(CLANG_FORMAT AND CLANG_TIDY)
+    add_dependencies(calc format tidy)
 endif()

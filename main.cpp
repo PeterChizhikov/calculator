@@ -17,9 +17,10 @@ void printHelp()
     printf("Options:\n");
     printf("  -a <num>    Set the first number\n");
     printf("  -b <num>    Set the second number\n");
-    printf("  -o <char>   Set the operation (+, -, *, /, ^,!)\n");
-    printf("  If you use -o ! (factorial, only a is need) print -b 0 to avoid error");
+    printf("  -o <char>   Set the operation (+, -, '*', /, '^','!')\n");
+    printf("  If you use -o ! (factorial, only a is need) print -b 0 to avoid error\n");
     printf("  -h          Show this help message\n");
+    printf("Example: calc -a 4 -b 8 -o '*'\n");
 
 }
 
@@ -67,35 +68,39 @@ void printValues(mathInfo &info)
 
 void calculateValues(mathInfo &info)
 {
-    int operationStatus;
-	if(info.operation == '+')
-{
-	operationStatus =mathOperations::sum(info.firstNum. info.secondNum, info.result);
+    int operationStatus = 0;
+    if (info.operation == '+') {
+        operationStatus = mathOperations::sum(info.firstNum, info.secondNum, info.result);
+    } else if (info.operation == '-') {
+        operationStatus = mathOperations::subtract(info.firstNum, info.secondNum, info.result);
+    } else if (info.operation == '*') {
+        operationStatus = mathOperations::multiply(info.firstNum, info.secondNum, info.result);
+    } else if (info.operation == '/') {
+        operationStatus = mathOperations::divide(info.firstNum, info.secondNum, info.result);
+    } else if (info.operation == '!') {
+        operationStatus = mathOperations::factorial(info.firstNum, info.result);
+    } else if (info.operation == '^') {
+        operationStatus = mathOperations::pow(info.firstNum, info.secondNum, info.result);
+    } else {
+        operationStatus = -1;
+    }
 
-}
-        if(info.operation == '-')
-{
-    operationStatus = mathOperations::subtract(info.firstNum. info.secondNum, info.result);
-}
-        if(info.operation == '*')
-{
-    operationStatus =mathOperations::multiply(info.firstNum. info.secondNum, info.result);
-}
-        if(info.operation == '/')
-{
-    mathOperations::divide(info.firstNum. info.secondNum, info.result);
-}
-        if(info.operation == '!')
-{
-    mathOperations::factorial(info.firstNum. info.secondNum, info.result);
-}
-        if(info.operation == '^')
-{
-    mathOperations::pow(info.firstNum. info.secondNum, info.result);
-}
-    if(operationStatus == 0) printf("Операция выполнена успешно!\n");
-    else if(operationStatus == 1) printf("Ошибка в операции!\n");
-    else if(operationStatus == 2) printf("Переполнение типа!\n");
+    if (operationStatus == 0) {
+        printf("Операция выполнена успешно!\n");
+        return;
+    }
+    if (operationStatus == -1) {
+        printf("Ошибка в операции!\n");
+        exit(EXIT_FAILURE);
+    }
+    if (operationStatus == -2) {
+        printf("Переполнение типа!\n");
+        exit(EXIT_FAILURE);
+    }
+    if (operationStatus == -3) {
+        printf("Недопустимая операция (например 0^0)!\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 void checkValues(mathInfo &info)
@@ -108,7 +113,7 @@ void checkValues(mathInfo &info)
     if (info.operation != '+' && info.operation != '-' &&
         info.operation != '*' && info.operation != '/' &&
         info.operation != '^' && info.operation != '!') {
-        fprintf(stderr, "Error: Invalid operation '%c'. Only +, -, *,^,!", info.operation);
+        fprintf(stderr, "Error: Invalid operation '%c'. Only +, -, *,^,!\n", info.operation);
         exit(EXIT_FAILURE);
     }
 
@@ -136,6 +141,7 @@ int main(int argc, char** argv)
        printHelp();	
     }
     run(argc, argv);
+    return 0;
 }
 
 
