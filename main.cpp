@@ -106,15 +106,15 @@ void calculateValues(mathInfo &info)
         return;
     }
     if (operationStatus == -1) {
-        printf("Ошибка в операции!\n");
-       return;
+        printf("Ошибка в операции! Результат невалиден!\n");
+        return;
     }
     if (operationStatus == -2) {
-        printf("Переполнение типа!\n");
-       return;
+        printf("Переполнение типа! Результат невалиден!\n");
+        return;
     }
     if (operationStatus == -3) {
-        printf("Недопустимая операция (например 0^0)!\n");
+        printf("Недопустимая операция (например 0^0)! Результат невалиден!\n");
         return;
     }
 }
