@@ -23,26 +23,43 @@ void printHelp()
 
 }
 
+int stringToInt(const char* str, bool &error)
+{
+    int val = 0;
+    
+    if (!str || *str == '\0') {
+        error = true;
+        return 0;
+    }
+
+    if (sscanf(str, "%d", &val) != 1) {
+        error = true;
+        return 0;
+    }
+    
+    error = false;
+    return (int)val;
+}
 
 void parseValues(int argc,char** argv, mathInfo &info)
 {
     int opt;
-    char *endptr; //указатель на первый "не цифровой" символ
+    bool parseError = false;
     while ((opt = getopt(argc, argv, "a:b:o:h")) != -1){
 
         switch (opt) {
             case 'a':
-                info.firstNum = (int)strtol(optarg, &endptr, 10);
-                if (*endptr != '\0' || optarg == endptr) {
+                info.firstNum = stringToInt(optarg, parseError);
+                if (parseError) {
                     fprintf(stderr, "Error: Argument for -a must be integer");
-                    exit(EXIT_FAILURE);
+                    return;
                 }
                 break;
             case 'b':
-                info.secondNum = (int)strtol(optarg, &endptr, 10);
-                if (*endptr != '\0' || optarg == endptr) {
+                info.secondNum = stringToInt(optarg, parseError);
+                if (parseError) {
                     fprintf(stderr, "Error: Argument for -b must be integer");
-                    exit(EXIT_FAILURE);
+                    return;
                 }
                 break;
             case 'o':
@@ -55,7 +72,7 @@ void parseValues(int argc,char** argv, mathInfo &info)
                 fprintf(stderr, "Error: Print -h for help\n");
             default:
                 printHelp();
-                exit(EXIT_FAILURE);
+                return;
         }
     }
 }
@@ -67,7 +84,7 @@ void printValues(mathInfo &info)
 
 void calculateValues(mathInfo &info)
 {
-    int operationStatus = 0;
+    int operationStatus = -1;
     if (info.operation == '+') {
         operationStatus = mathOperations::sum(info.firstNum, info.secondNum, info.result);
     } else if (info.operation == '-') {
@@ -90,15 +107,15 @@ void calculateValues(mathInfo &info)
     }
     if (operationStatus == -1) {
         printf("Ошибка в операции!\n");
-        exit(EXIT_FAILURE);
+       return;
     }
     if (operationStatus == -2) {
         printf("Переполнение типа!\n");
-        exit(EXIT_FAILURE);
+       return;
     }
     if (operationStatus == -3) {
         printf("Недопустимая операция (например 0^0)!\n");
-        exit(EXIT_FAILURE);
+        return;
     }
 }
 
@@ -106,19 +123,19 @@ void checkValues(mathInfo &info)
 {
     if (info.operation == ' ') {
         fprintf(stderr, "Error: Operation (-o) is required \n");
-        exit(EXIT_FAILURE);
+        return;
     }
 
     if (info.operation != '+' && info.operation != '-' &&
         info.operation != '*' && info.operation != '/' &&
         info.operation != '^' && info.operation != '!') {
         fprintf(stderr, "Error: Invalid operation '%c'. Only +, -, *,^,!\n", info.operation);
-        exit(EXIT_FAILURE);
+        return;
     }
 
     if (info.operation == '/' && info.secondNum == 0) {
         fprintf(stderr, "Error: Division by zero is undefined.\n");
-        exit(EXIT_FAILURE);
+        return;
     }
 
 }
@@ -131,7 +148,7 @@ void run(int argc,char** argv)
     checkValues(info);
     calculateValues(info);
     printValues(info);
-    exit(EXIT_SUCCESS);
+    return;
 }
 
 int main(int argc, char** argv)
