@@ -43,11 +43,23 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/PeterChizhikov/mathLib.git
     GIT_TAG main
 )
+
+FetchContent_Declare(
+    json 
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+
 FetchContent_MakeAvailable(mathLib)
+FetchContent_MakeAvailable(json)
 add_executable(calc ${SOURCE_FILES})
 
 target_include_directories(calc PRIVATE include)
-target_link_libraries(calc PRIVATE mathLib)
+target_link_libraries(calc
+    PRIVATE
+    mathLib
+    nlohmann_json::nlohmann_json
+)
 
 install(TARGETS calc RUNTIME DESTINATION bin)
 

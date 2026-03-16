@@ -1,4 +1,6 @@
-class MathInfo{
+#pragma once
+
+class MathInfo {
     private:
         int firstNum={};
         int secondNum={};

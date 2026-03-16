@@ -1,4 +1,9 @@
 #include <iostream>
+#include "Calculator.h"
+#include "Checker.h"
+#include "MathInfo.h"
+#include "Parser.h"
+#include "Printer.h"
 
 class Runner
 {
