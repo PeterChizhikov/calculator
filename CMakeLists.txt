@@ -20,7 +20,21 @@ if(UNIX)
     endif()
 endif()
 
-set(SOURCE_FILES main.cpp)
+set(HEADER_FILES
+    include/Calculator.h
+    include/Checker.h
+    include/Parser.h 
+    include/Printer.h
+    include/Runner.h
+)
+
+set(SOURCE_FILES 
+    src/main.cpp
+    src/Calculator.cpp
+    src/Checker.cpp
+    src/Parser.cpp
+    src/Printer.cpp
+    src/Runner.cpp)
 
 include(FetchContent)
 
@@ -31,6 +45,8 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(mathLib)
 add_executable(calc ${SOURCE_FILES})
+
+target_include_directories(calc PRIVATE include)
 target_link_libraries(calc PRIVATE mathLib)
 
 install(TARGETS calc RUNTIME DESTINATION bin)
@@ -38,7 +54,7 @@ install(TARGETS calc RUNTIME DESTINATION bin)
 find_program(CLANG_FORMAT NAMES clang-format clang-format-18 clang-format-17 clang-format-16)
 if(CLANG_FORMAT)
     add_custom_target(format
-        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES}
+        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} {HEADER_FILES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
     )
