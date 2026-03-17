@@ -66,7 +66,7 @@ install(TARGETS calc RUNTIME DESTINATION bin)
 find_program(CLANG_FORMAT NAMES clang-format clang-format-18 clang-format-17 clang-format-16)
 if(CLANG_FORMAT)
     add_custom_target(format
-        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} {HEADER_FILES}
+        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} ${HEADER_FILES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
     )

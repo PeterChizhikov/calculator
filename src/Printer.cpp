@@ -1,7 +1,5 @@
 #include "Printer.h"
 
-
-void Printer::printValues()
-{
-    //printf("Result: %d\n", info.result);
+void Printer::printValues() {
+    // printf("Result: %d\n", info.result);
 }

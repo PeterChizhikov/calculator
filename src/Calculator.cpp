@@ -1,6 +1,6 @@
 #include "Calculator.h"
 
-void Calculator::calculateValues(){
+void Calculator::calculateValues() {
     //     int operationStatus = -1;
     // if (info.operation == '+') {
     //     operationStatus = mathOperations::sum(info.firstNum, info.secondNum, info.result);
@@ -34,5 +34,4 @@ void Calculator::calculateValues(){
     //     printf("Недопустимая операция (например 0^0)! Результат невалиден!\n");
     //     return;
     // }
-
 }

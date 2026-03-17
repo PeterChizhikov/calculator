@@ -1,8 +1,9 @@
 #include "Parser.h"
 
-MathInfo Parser::parseValues(int argc, char** argv){
+MathInfo Parser::parseValues(int argc, char **argv) {
     MathInfo info;
 
+    std::cout << "input: " << argv[1] << "\n";
     if (argc < 2)
         throw std::runtime_error("JSON argument missing");
 

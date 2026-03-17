@@ -1,7 +1,6 @@
 #include "mathFunctions.h"
 
-class Calculator
-{
+class Calculator {
 private:
     /* data */
 public:

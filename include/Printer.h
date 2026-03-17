@@ -1,8 +1,6 @@
-class Printer
-{
+class Printer {
 private:
     /* data */
 public:
     void printValues();
 };
-

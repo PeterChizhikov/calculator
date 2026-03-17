@@ -1,6 +1,6 @@
 #include "Checker.h"
 
-void Checker::checkValues(){
+void Checker::checkValues() {
     // if (info.operation == ' ') {
     // fprintf(stderr, "Error: Operation (-o) is required \n");
     // return;
@@ -17,5 +17,4 @@ void Checker::checkValues(){
     //     fprintf(stderr, "Error: Division by zero is undefined.\n");
     //     return;
     // }
-
 }

@@ -1,8 +1,5 @@
-class Checker
-{
+class Checker {
 private:
-
 public:
     void checkValues();
 };
-
