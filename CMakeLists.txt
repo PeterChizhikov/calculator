@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(CTest)
 
 set(COMPILE_COMMANDS_LINK "${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json")
 set(COMPILE_COMMANDS_FILE "${CMAKE_BINARY_DIR}/compile_commands.json")
@@ -36,7 +37,12 @@ set(SOURCE_FILES
     src/Checker.cpp
     src/Parser.cpp
     src/Printer.cpp
-    src/Runner.cpp)
+    src/Runner.cpp
+)
+
+set(TEST_SOURCE_FILES
+    tests/CalculatorTests.cpp
+)
 
 include(FetchContent)
 
@@ -52,6 +58,12 @@ FetchContent_Declare(
     GIT_TAG v3.11.3
 )
 
+FetchContent_Declare(
+    googletest 
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.15.2
+)
+
 FetchContent_MakeAvailable(mathLib)
 FetchContent_MakeAvailable(json)
 add_executable(calc ${SOURCE_FILES})
@@ -65,10 +77,19 @@ target_link_libraries(calc
 
 install(TARGETS calc RUNTIME DESTINATION bin)
 
+if(BUILD_TESTING)
+    FetchContent_MakeAvailable(googletest)
+    include(GoogleTest)
+
+    add_executable(calc_tests ${TEST_SOURCE_FILES})
+    target_link_libraries(calc_tests PRIVATE calc_core GTest::gtest_main)
+    gtest_discover_tests(calc_tests)
+endif()
+
 find_program(CLANG_FORMAT NAMES clang-format clang-format-18 clang-format-17 clang-format-16)
 if(CLANG_FORMAT)
     add_custom_target(format
-        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} ${HEADER_FILES}
+        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} ${HEADER_FILES} ${TEST_SOURCE_FILES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
     )
@@ -93,4 +114,7 @@ endif()
 
 if(CLANG_FORMAT AND CLANG_TIDY)
     add_dependencies(calc format tidy)
+    if(BUILD_TESTING)
+        add_dependencies(calc_tests format)
+    endif()
 endif()
