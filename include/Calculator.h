@@ -1,8 +1,8 @@
+#include "MathInfo.h"
 #include "mathFunctions.h"
+#include <stdexcept>
 
 class Calculator {
-private:
-    /* data */
 public:
-    void calculateValues();
+    static void calculateValues(MathInfo &info);
 };

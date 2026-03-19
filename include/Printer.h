@@ -1,6 +1,7 @@
+#include "MathInfo.h"
+#include <iostream>
+
 class Printer {
-private:
-    /* data */
 public:
-    void printValues();
+    static void printValues(MathInfo &info);
 };

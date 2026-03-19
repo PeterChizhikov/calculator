@@ -7,7 +7,11 @@
 
 class Runner {
 private:
-    /* data */
+    int numberOfInputArgs;
+    char **inputString;
+
 public:
     Runner(int argc, char **argv);
+
+    void run();
 };

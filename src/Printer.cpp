@@ -1,5 +1,5 @@
 #include "Printer.h"
 
-void Printer::printValues() {
-    // printf("Result: %d\n", info.result);
+void Printer::printValues(MathInfo &info) {
+    std::cout << "Result: " << info.getResult() << std::endl;
 }
