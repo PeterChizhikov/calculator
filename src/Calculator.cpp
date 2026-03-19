@@ -45,6 +45,5 @@ void Calculator::calculateValues(MathInfo &info) {
     if (operationStatus == -3) {
         Logger::getInstance().error("Calculation failed: invalid operation");
         throw std::runtime_error("Invalid operation!");
-        return;
     }
 }
