@@ -1,6 +1,7 @@
 #include "Calculator.h"
 
 void Calculator::calculateValues(MathInfo &info) {
+    Logger::getInstance().debug("Starting calculation");
     int operationStatus = -1;
     int result = 0;
 
@@ -30,15 +31,19 @@ void Calculator::calculateValues(MathInfo &info) {
 
     if (operationStatus == 0) {
         info.setResult(result);
+        Logger::getInstance().info("Calculation finished successfully");
         return;
     }
     if (operationStatus == -1) {
+        Logger::getInstance().error("Calculation failed: error in operation");
         throw std::runtime_error("Error in operation!");
     }
     if (operationStatus == -2) {
+        Logger::getInstance().error("Calculation failed: overflow");
         throw std::overflow_error("Overflow!");
     }
     if (operationStatus == -3) {
+        Logger::getInstance().error("Calculation failed: invalid operation");
         throw std::runtime_error("Invalid operation!");
         return;
     }

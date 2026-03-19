@@ -23,6 +23,7 @@ if(UNIX)
     endif()
 endif()
 
+
 set(HEADER_FILES
     include/Calculator.h
     include/Checker.h
@@ -30,6 +31,7 @@ set(HEADER_FILES
     include/Printer.h
     include/Runner.h
     include/MathInfo.h
+    include/Logger.h
 )
 
 set(SOURCE_FILES 
@@ -40,6 +42,7 @@ set(SOURCE_FILES
     src/Printer.cpp
     src/Runner.cpp
     src/MathInfo.cpp
+    src/Logger.cpp
 )
 
 set(TEST_SOURCE_FILES
@@ -49,6 +52,7 @@ set(TEST_SOURCE_FILES
 set(TEST_APP_SOURCE_FILES
     src/Calculator.cpp
     src/Checker.cpp
+    src/Logger.cpp
     src/MathInfo.cpp
     src/Parser.cpp
     src/Printer.cpp
@@ -75,8 +79,16 @@ FetchContent_Declare(
     GIT_TAG v1.15.2
 )
 
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.14.1
+)
+
 FetchContent_MakeAvailable(mathLib)
 FetchContent_MakeAvailable(json)
+FetchContent_MakeAvailable(spdlog)
+
 add_executable(calc ${SOURCE_FILES})
 
 target_include_directories(calc PRIVATE include)
@@ -84,6 +96,7 @@ target_link_libraries(calc
     PRIVATE
     mathLib
     nlohmann_json::nlohmann_json
+    spdlog::spdlog
 )
 
 install(TARGETS calc RUNTIME DESTINATION bin)
@@ -102,6 +115,7 @@ if(BUILD_TESTING)
         PRIVATE
         mathLib
         nlohmann_json::nlohmann_json
+        spdlog::spdlog
         GTest::gtest_main
     )
     gtest_discover_tests(calc_tests)

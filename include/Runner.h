@@ -2,10 +2,12 @@
 
 #include "Calculator.h"
 #include "Checker.h"
+#include "Logger.h"
 #include "MathInfo.h"
 #include "Parser.h"
 #include "Printer.h"
 #include <iostream>
+#include <string>
 
 class Runner {
 private:

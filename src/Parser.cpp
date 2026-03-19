@@ -3,17 +3,22 @@
 MathInfo Parser::parseValues(int argc, char **argv) {
     MathInfo info;
 
-    std::cout << "input: " << argv[1] << "\n";
-    if (argc < 2)
+    Logger::getInstance().debug(argv[1]);
+
+    if (argc < 2) {
+        Logger::getInstance().error("JSON argument is missing");
         throw std::runtime_error("JSON argument missing");
+    }
 
     json data = json::parse(argv[1]);
 
     info.setFirstNum(data.value("firstNum", 0));
     info.setSecondNum(data.value("secondNum", 0));
 
-    std::string op = data.value("operation", "&");
-    info.setOperation(op[0]);
+    std::string operation = data.value("operation", "&");
+    info.setOperation(operation[0]);
+
+    Logger::getInstance().info("Input JSON parsed successfully");
 
     return info;
 }
