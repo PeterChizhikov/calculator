@@ -1,3 +1,5 @@
+#pragma once
+
 #include "MathInfo.h"
 #include <stdexcept>
 #include <string>

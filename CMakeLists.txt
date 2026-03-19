@@ -29,6 +29,7 @@ set(HEADER_FILES
     include/Parser.h 
     include/Printer.h
     include/Runner.h
+    include/MathInfo.h
 )
 
 set(SOURCE_FILES 
@@ -38,10 +39,20 @@ set(SOURCE_FILES
     src/Parser.cpp
     src/Printer.cpp
     src/Runner.cpp
+    src/MathInfo.cpp
 )
 
 set(TEST_SOURCE_FILES
     tests/CalculatorTests.cpp
+)
+
+set(TEST_APP_SOURCE_FILES
+    src/Calculator.cpp
+    src/Checker.cpp
+    src/MathInfo.cpp
+    src/Parser.cpp
+    src/Printer.cpp
+    src/Runner.cpp
 )
 
 include(FetchContent)
@@ -81,8 +92,18 @@ if(BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
     include(GoogleTest)
 
-    add_executable(calc_tests ${TEST_SOURCE_FILES})
-    target_link_libraries(calc_tests PRIVATE calc_core GTest::gtest_main)
+    add_executable(calc_tests
+        ${TEST_SOURCE_FILES}
+        ${TEST_APP_SOURCE_FILES}
+    )
+    
+    target_include_directories(calc_tests PRIVATE include)
+    target_link_libraries(calc_tests
+        PRIVATE
+        mathLib
+        nlohmann_json::nlohmann_json
+        GTest::gtest_main
+    )
     gtest_discover_tests(calc_tests)
 endif()
 
