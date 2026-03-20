@@ -12,11 +12,11 @@ MathInfo Parser::parseValues(int argc, char **argv) {
 
     json data = json::parse(argv[1]);
 
-    info.setFirstNum(data.value("firstNum", 0));
-    info.setSecondNum(data.value("secondNum", 0));
+    info.firstNum = data.value("firstNum", 0);
+    info.secondNum = data.value("secondNum", 0);
 
     std::string operation = data.value("operation", "&");
-    info.setOperation(operation[0]);
+    info.operation = operation[0];
 
     Logger::getInstance().info("Input JSON parsed successfully");
 

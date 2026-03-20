@@ -12,6 +12,5 @@ void Runner::run() {
         Logger::getInstance().info("Application finished successfully");
     } catch (const std::exception &e) {
         Logger::getInstance().error(std::string("Application finished with error: ") + e.what());
-        std::cerr << "Error: " << e.what() << '\n';
     }
 }

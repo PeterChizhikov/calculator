@@ -2,47 +2,53 @@
 
 void Calculator::calculateValues(MathInfo &info) {
     Logger::getInstance().debug("Starting calculation");
-    int operationStatus = -1;
+    OperationResultStatus operationStatus = OperationResultStatus::ErrorInOperation;
     int result = 0;
 
-    switch (info.getOperation()) {
+    switch (info.operation) {
     case '+':
-        operationStatus = mathOperations::sum(info.getFirstNum(), info.getSecondNum(), result);
+        operationStatus = static_cast<OperationResultStatus>(
+            mathOperations::sum(info.firstNum, info.secondNum, result));
         break;
     case '-':
-        operationStatus = mathOperations::subtract(info.getFirstNum(), info.getSecondNum(), result);
+        operationStatus = static_cast<OperationResultStatus>(
+            mathOperations::subtract(info.firstNum, info.secondNum, result));
         break;
     case '*':
-        operationStatus = mathOperations::multiply(info.getFirstNum(), info.getSecondNum(), result);
+        operationStatus = static_cast<OperationResultStatus>(
+            mathOperations::multiply(info.firstNum, info.secondNum, result));
         break;
     case '/':
-        operationStatus = mathOperations::divide(info.getFirstNum(), info.getSecondNum(), result);
+        operationStatus = static_cast<OperationResultStatus>(
+            mathOperations::divide(info.firstNum, info.secondNum, result));
         break;
     case '^':
-        operationStatus = mathOperations::pow(info.getFirstNum(), info.getSecondNum(), result);
+        operationStatus = static_cast<OperationResultStatus>(
+            mathOperations::pow(info.firstNum, info.secondNum, result));
         break;
     case '!':
-        operationStatus = mathOperations::factorial(info.getFirstNum(), result);
+        operationStatus =
+            static_cast<OperationResultStatus>(mathOperations::factorial(info.firstNum, result));
         break;
     default:
-        operationStatus = -1;
+        operationStatus = OperationResultStatus::ErrorInOperation;
         break;
     }
 
-    if (operationStatus == 0) {
-        info.setResult(result);
+    if (operationStatus == OperationResultStatus::SuccessfulOperation) {
+        info.result = result;
         Logger::getInstance().info("Calculation finished successfully");
         return;
     }
-    if (operationStatus == -1) {
+    if (operationStatus == OperationResultStatus::ErrorInOperation) {
         Logger::getInstance().error("Calculation failed: error in operation");
         throw std::runtime_error("Error in operation!");
     }
-    if (operationStatus == -2) {
+    if (operationStatus == OperationResultStatus::Overflow) {
         Logger::getInstance().error("Calculation failed: overflow");
         throw std::overflow_error("Overflow!");
     }
-    if (operationStatus == -3) {
+    if (operationStatus == OperationResultStatus::InvalidOperation) {
         Logger::getInstance().error("Calculation failed: invalid operation");
         throw std::runtime_error("Invalid operation!");
     }

@@ -2,5 +2,5 @@
 
 void Printer::printValues(MathInfo &info) {
     Logger::getInstance().debug("Printing calculation result");
-    std::cout << "Result: " << info.getResult() << std::endl;
+    std::cout << "Result: " << info.result << std::endl;
 }

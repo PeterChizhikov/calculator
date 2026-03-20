@@ -41,7 +41,6 @@ set(SOURCE_FILES
     src/Parser.cpp
     src/Printer.cpp
     src/Runner.cpp
-    src/MathInfo.cpp
     src/Logger.cpp
 )
 
@@ -53,7 +52,6 @@ set(TEST_APP_SOURCE_FILES
     src/Calculator.cpp
     src/Checker.cpp
     src/Logger.cpp
-    src/MathInfo.cpp
     src/Parser.cpp
     src/Printer.cpp
     src/Runner.cpp
