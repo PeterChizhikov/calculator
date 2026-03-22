@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(Calculator)
-
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+include(CTest)
 
 set(COMPILE_COMMANDS_LINK "${CMAKE_CURRENT_SOURCE_DIR}/compile_commands.json")
 set(COMPILE_COMMANDS_FILE "${CMAKE_BINARY_DIR}/compile_commands.json")
@@ -20,7 +23,39 @@ if(UNIX)
     endif()
 endif()
 
-set(SOURCE_FILES main.cpp)
+
+set(HEADER_FILES
+    include/Calculator.h
+    include/Checker.h
+    include/Parser.h 
+    include/Printer.h
+    include/Runner.h
+    include/MathInfo.h
+    include/Logger.h
+)
+
+set(SOURCE_FILES 
+    src/main.cpp
+    src/Calculator.cpp
+    src/Checker.cpp
+    src/Parser.cpp
+    src/Printer.cpp
+    src/Runner.cpp
+    src/Logger.cpp
+)
+
+set(TEST_SOURCE_FILES
+    tests/CalculatorTests.cpp
+)
+
+set(TEST_APP_SOURCE_FILES
+    src/Calculator.cpp
+    src/Checker.cpp
+    src/Logger.cpp
+    src/Parser.cpp
+    src/Printer.cpp
+    src/Runner.cpp
+)
 
 include(FetchContent)
 
@@ -29,16 +64,65 @@ FetchContent_Declare(
     GIT_REPOSITORY https://github.com/PeterChizhikov/mathLib.git
     GIT_TAG main
 )
+
+FetchContent_Declare(
+    json 
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG v3.11.3
+)
+
+FetchContent_Declare(
+    googletest 
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG v1.15.2
+)
+
+FetchContent_Declare(
+    spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.14.1
+)
+
 FetchContent_MakeAvailable(mathLib)
+FetchContent_MakeAvailable(json)
+FetchContent_MakeAvailable(spdlog)
+
 add_executable(calc ${SOURCE_FILES})
-target_link_libraries(calc PRIVATE mathLib)
+
+target_include_directories(calc PRIVATE include)
+target_link_libraries(calc
+    PRIVATE
+    mathLib
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+)
 
 install(TARGETS calc RUNTIME DESTINATION bin)
+
+if(BUILD_TESTING)
+    FetchContent_MakeAvailable(googletest)
+    include(GoogleTest)
+
+    add_executable(calc_tests
+        ${TEST_SOURCE_FILES}
+        ${TEST_APP_SOURCE_FILES}
+    )
+    
+    target_include_directories(calc_tests PRIVATE include)
+    target_link_libraries(calc_tests
+        PRIVATE
+        mathLib
+        nlohmann_json::nlohmann_json
+        spdlog::spdlog
+        GTest::gtest_main
+    )
+    gtest_discover_tests(calc_tests)
+endif()
 
 find_program(CLANG_FORMAT NAMES clang-format clang-format-18 clang-format-17 clang-format-16)
 if(CLANG_FORMAT)
     add_custom_target(format
-        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES}
+        COMMAND ${CLANG_FORMAT} -i ${SOURCE_FILES} ${HEADER_FILES} ${TEST_SOURCE_FILES}
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
         COMMENT "Formatting sources with clang-format"
     )
@@ -63,4 +147,7 @@ endif()
 
 if(CLANG_FORMAT AND CLANG_TIDY)
     add_dependencies(calc format tidy)
+    if(BUILD_TESTING)
+        add_dependencies(calc_tests format)
+    endif()
 endif()
