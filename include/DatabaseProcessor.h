@@ -20,5 +20,18 @@ private:
 
 public:
     explicit DatabaseProcessor();
-    void recordNewData(const MathInfo &info) const;
+    /**
+     * @brief Сохраняет новую запись в таблицу calculations.
+     * @param info Данные вычисления.
+     * @return UUID новой записи.
+     */
+    [[nodiscard]] std::string recordNewData(const MathInfo &info) const;
+    /**
+     * @brief Вносит результат операции в таблицу calculations.
+     * @param info Данные вычисления.
+     * @param operationKey Ключ операции, для которой будет записан результат.
+     * @param message Сообщение по результатам операции
+     */
+    void recordResult(const MathInfo &info, const std::string &operationKey,
+                      std::string message = "Error", int errorCode = 0) const;
 };

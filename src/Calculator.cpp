@@ -42,14 +42,14 @@ void Calculator::calculateValues(MathInfo &info) {
     }
     if (operationStatus == OperationResultStatus::ErrorInOperation) {
         Logger::getInstance().error("Calculation failed: error in operation");
-        throw std::runtime_error("Error in operation!");
+        throw CalculatorException("Error in operation!", static_cast<int8_t>(operationStatus));
     }
     if (operationStatus == OperationResultStatus::Overflow) {
         Logger::getInstance().error("Calculation failed: overflow");
-        throw std::overflow_error("Overflow!");
+        throw CalculatorException("Overflow!", static_cast<int8_t>(operationStatus));
     }
     if (operationStatus == OperationResultStatus::InvalidOperation) {
         Logger::getInstance().error("Calculation failed: invalid operation");
-        throw std::runtime_error("Invalid operation!");
+        throw CalculatorException("Invalid operation!", static_cast<int8_t>(operationStatus));
     }
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Calculator.h"
+#include "CalculatorException.h"
 #include "Checker.h"
 #include "DatabaseProcessor.h"
 #include "Logger.h"

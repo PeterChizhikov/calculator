@@ -34,6 +34,7 @@ set(HEADER_FILES
     include/MathInfo.h
     include/Logger.h
     include/DatabaseProcessor.h
+    include/CalculatorException.h
 )
 
 set(SOURCE_FILES 
@@ -45,6 +46,7 @@ set(SOURCE_FILES
     src/Runner.cpp
     src/Logger.cpp
     src/DatabaseProcessor.cpp
+    src/CalculatorException.cpp
 )
 
 set(TEST_SOURCE_FILES
@@ -59,6 +61,7 @@ set(TEST_APP_SOURCE_FILES
     src/Printer.cpp
     src/Runner.cpp
     src/DatabaseProcessor.cpp
+    src/CalculatorException.cpp
 )
 
 include(FetchContent)
