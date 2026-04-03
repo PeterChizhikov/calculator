@@ -10,9 +10,22 @@ void Runner::run() {
     try {
         info = Parser::parseValues(numberOfInputArgs, inputString);
         Checker::checkValues(info);
-        operationId = dbprocessor->recordNewData(info);
-        Calculator::calculateValues(info);
-        dbprocessor->recordResult(info, operationId, "ok");
+        const std::vector<MathInfo> savedCalculations = dbprocessor->getAllCalculations();
+        for (const auto &savedInfo : savedCalculations) {
+            cache.put(savedInfo.firstNum, savedInfo.secondNum, savedInfo.operation,
+                      savedInfo.result);
+        }
+        Logger::getInstance().info("Saved calculations were loaded into cache");
+        if (const auto cachedResult = cache.get(info.firstNum, info.secondNum, info.operation)) {
+            info.result = *cachedResult;
+            Logger::getInstance().info("Result was taken from cache");
+        } else {
+            Calculator::calculateValues(info);
+            cache.put(info.firstNum, info.secondNum, info.operation, info.result);
+            Logger::getInstance().info("Result was calculated and saved to cache");
+            operationId = dbprocessor->recordNewData(info);
+            dbprocessor->recordResult(info, operationId, "ok");
+        }
         Printer::printValues(info);
         Logger::getInstance().info("Application finished successfully");
     } catch (const CalculatorException &e) {

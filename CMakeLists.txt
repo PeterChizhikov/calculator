@@ -93,7 +93,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mathLib)
 FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(spdlog)
-
+add_subdirectory(cache)
 add_executable(calc ${SOURCE_FILES})
 
 target_include_directories(calc PRIVATE include)
@@ -103,6 +103,7 @@ target_link_libraries(calc
     nlohmann_json::nlohmann_json
     spdlog::spdlog
     PostgreSQL::PostgreSQL
+    cache_lib
 )
 
 install(TARGETS calc RUNTIME DESTINATION bin)
@@ -124,6 +125,7 @@ if(BUILD_TESTING)
         spdlog::spdlog
         GTest::gtest_main
         PostgreSQL::PostgreSQL
+        cache_lib
     )
     gtest_discover_tests(calc_tests)
 endif()

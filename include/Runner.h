@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CacheManager.h"
 #include "Calculator.h"
 #include "CalculatorException.h"
 #include "Checker.h"
@@ -16,6 +17,7 @@ class Runner {
 private:
     int numberOfInputArgs;
     char **inputString;
+    CacheManager cache;
 
 public:
     Runner(int argc, char **argv);

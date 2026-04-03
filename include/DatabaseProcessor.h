@@ -6,6 +6,7 @@
 #include <libpq-fe.h>
 #include <memory>
 #include <string>
+#include <vector>
 
 class DatabaseProcessor {
 private:
@@ -34,4 +35,6 @@ public:
      */
     void recordResult(const MathInfo &info, const std::string &operationKey,
                       std::string message = "Error", int errorCode = 0) const;
+
+    std::vector<MathInfo> getAllCalculations() const;
 };

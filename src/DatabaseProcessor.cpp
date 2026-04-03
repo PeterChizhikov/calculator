@@ -145,3 +145,46 @@ void DatabaseProcessor::recordResult(const MathInfo &info, const std::string &op
 
     Logger::getInstance().info("Calculation was updated successfully for id: " + operationKey);
 }
+
+std::vector<MathInfo> DatabaseProcessor::getAllCalculations() const {
+    const std::string query = "SELECT number1, number2, operation, result FROM calculations;";
+
+    PGresult *rawResult = PQexec(connection.get(), query.c_str());
+
+    if (!rawResult) {
+        Logger::getInstance().error("PQexec returned nullptr");
+        throw std::runtime_error("PQexec returned nullptr");
+    }
+
+    std::unique_ptr<PGresult, decltype(&PQclear)> result(rawResult, &PQclear);
+
+    if (PQresultStatus(result.get()) != PGRES_TUPLES_OK) {
+        const std::string errorMessage = PQerrorMessage(connection.get());
+        Logger::getInstance().error("Select failed: " + errorMessage);
+        throw std::runtime_error("Select failed: " + errorMessage);
+    }
+
+    const int rows = PQntuples(result.get());
+
+    std::vector<MathInfo> data;
+    data.reserve(rows);
+
+    for (int i = 0; i < rows; ++i) {
+        MathInfo info;
+
+        info.firstNum = std::stoi(PQgetvalue(result.get(), i, 0));
+        info.secondNum = std::stoi(PQgetvalue(result.get(), i, 1));
+        info.operation = PQgetvalue(result.get(), i, 2)[0];
+        if (PQgetisnull(result.get(), i, 3)) {
+            info.result = 0;
+        } else {
+            info.result = std::stoi(PQgetvalue(result.get(), i, 3));
+        }
+
+        data.push_back(info);
+    }
+
+    Logger::getInstance().info("Fetched " + std::to_string(data.size()) + " records from DB");
+
+    return data;
+}
