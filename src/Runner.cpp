@@ -20,10 +20,10 @@ void Runner::run() {
             info.result = *cachedResult;
             Logger::getInstance().info("Result was taken from cache");
         } else {
+            operationId = dbprocessor->recordNewData(info);
             Calculator::calculateValues(info);
             cache.put(info.firstNum, info.secondNum, info.operation, info.result);
             Logger::getInstance().info("Result was calculated and saved to cache");
-            operationId = dbprocessor->recordNewData(info);
             dbprocessor->recordResult(info, operationId, "ok");
         }
         Printer::printValues(info);
