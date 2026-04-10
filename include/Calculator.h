@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CalculatorException.h"
 #include "Logger.h"
 #include "MathInfo.h"
 #include "mathFunctions.h"

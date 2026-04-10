@@ -23,6 +23,7 @@ if(UNIX)
     endif()
 endif()
 
+find_package(PostgreSQL REQUIRED)
 
 set(HEADER_FILES
     include/Calculator.h
@@ -32,6 +33,8 @@ set(HEADER_FILES
     include/Runner.h
     include/MathInfo.h
     include/Logger.h
+    include/DatabaseProcessor.h
+    include/CalculatorException.h
 )
 
 set(SOURCE_FILES 
@@ -42,6 +45,8 @@ set(SOURCE_FILES
     src/Printer.cpp
     src/Runner.cpp
     src/Logger.cpp
+    src/DatabaseProcessor.cpp
+    src/CalculatorException.cpp
 )
 
 set(TEST_SOURCE_FILES
@@ -55,6 +60,8 @@ set(TEST_APP_SOURCE_FILES
     src/Parser.cpp
     src/Printer.cpp
     src/Runner.cpp
+    src/DatabaseProcessor.cpp
+    src/CalculatorException.cpp
 )
 
 include(FetchContent)
@@ -86,7 +93,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(mathLib)
 FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(spdlog)
-
+add_subdirectory(cache)
 add_executable(calc ${SOURCE_FILES})
 
 target_include_directories(calc PRIVATE include)
@@ -95,6 +102,8 @@ target_link_libraries(calc
     mathLib
     nlohmann_json::nlohmann_json
     spdlog::spdlog
+    PostgreSQL::PostgreSQL
+    cache_lib
 )
 
 install(TARGETS calc RUNTIME DESTINATION bin)
@@ -107,7 +116,7 @@ if(BUILD_TESTING)
         ${TEST_SOURCE_FILES}
         ${TEST_APP_SOURCE_FILES}
     )
-    
+    find_package(PostgreSQL REQUIRED)
     target_include_directories(calc_tests PRIVATE include)
     target_link_libraries(calc_tests
         PRIVATE
@@ -115,6 +124,8 @@ if(BUILD_TESTING)
         nlohmann_json::nlohmann_json
         spdlog::spdlog
         GTest::gtest_main
+        PostgreSQL::PostgreSQL
+        cache_lib
     )
     gtest_discover_tests(calc_tests)
 endif()
