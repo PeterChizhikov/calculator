@@ -5,9 +5,10 @@ Runner::Runner(int argc, char **argv) : numberOfInputArgs(argc), inputString(arg
 void Runner::run() {
     Logger::getInstance().info("Application started");
     std::string operationId;
-    std::unique_ptr<DatabaseProcessor> dbprocessor = std::make_unique<DatabaseProcessor>();
+    std::unique_ptr<DatabaseProcessor> dbprocessor;
     MathInfo info;
     try {
+        dbprocessor = std::make_unique<DatabaseProcessor>();
         info = Parser::parseValues(numberOfInputArgs, inputString);
         Checker::checkValues(info);
         const std::vector<MathInfo> savedCalculations = dbprocessor->getAllCalculations();
