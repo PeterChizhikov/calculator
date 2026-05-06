@@ -29,10 +29,11 @@ void Runner::run() {
         }
         Printer::printValues(info);
         Logger::getInstance().info("Application finished successfully");
-    } catch (const CalculatorException &e) {
-        Logger::getInstance().error(std::string("Application finished with error: ") + e.what());
-        dbprocessor->recordResult(info, operationId,
-                                  std::string("Application finished with error: ") + e.what(),
-                                  e.getErrorCode());
+    } catch (const std::exception &e) {
+    Logger::getInstance().error(std::string("Application finished with error: ") + e.what());
+
+    if (!operationId.empty()) {
+        dbprocessor->recordResult(info, operationId, e.what(), -1);
     }
+}
 }

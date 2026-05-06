@@ -1,0 +1,15 @@
+[Unit]
+Description=Calculator ZeroMQ Service
+After=network.target postgresql.service
+Requires=postgresql.service
+
+[Service]
+Type=simple
+EnvironmentFile=/etc/calculator/calculator.env
+ExecStart=/usr/bin/calc_service ${CALCULATOR_ENDPOINT}
+Restart=on-failure
+User=calculator
+Group=calculator
+
+[Install]
+WantedBy=multi-user.target
