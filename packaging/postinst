@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+
+if ! id calculator >/dev/null 2>&1; then
+    useradd --system --no-create-home --shell /usr/sbin/nologin calculator
+fi
+
+systemctl daemon-reload || true
+
+exit 0

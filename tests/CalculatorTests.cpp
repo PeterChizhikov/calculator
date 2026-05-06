@@ -4,6 +4,7 @@
 #include "Parser.h"
 #include "Printer.h"
 #include "Runner.h"
+#include "CalculatorException.h"
 #include <gtest/gtest.h>
 #include <sstream>
 #include <string>
@@ -160,7 +161,7 @@ TEST(CalculatorTest, CalculatesFactorial) {
 
 TEST(CalculatorTest, ThrowsForUnsupportedOperation) {
     MathInfo info = createMathInfo(5, 2, '?');
-    EXPECT_THROW(Calculator::calculateValues(info), std::runtime_error);
+    EXPECT_THROW(Calculator::calculateValues(info), CalculatorException);
 }
 
 TEST(PrinterTest, PrintsResultLine) {

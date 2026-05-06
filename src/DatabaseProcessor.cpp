@@ -147,7 +147,7 @@ void DatabaseProcessor::recordResult(const MathInfo &info, const std::string &op
 }
 
 std::vector<MathInfo> DatabaseProcessor::getAllCalculations() const {
-    const std::string query = "SELECT number1, number2, operation, result FROM calculations;";
+    const std::string query = "SELECT number1, number2, operation, result FROM calculations WHERE result IS NOT NULL AND status = 0;";
 
     PGresult *rawResult = PQexec(connection.get(), query.c_str());
 

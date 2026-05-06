@@ -51,6 +51,7 @@ set(SOURCE_FILES
 
 set(TEST_SOURCE_FILES
     tests/CalculatorTests.cpp
+    tests/ServiceClientTests.cpp
 )
 
 set(TEST_APP_SOURCE_FILES
@@ -62,6 +63,17 @@ set(TEST_APP_SOURCE_FILES
     src/Runner.cpp
     src/DatabaseProcessor.cpp
     src/CalculatorException.cpp
+)
+
+set(SERVICE_SOURCE_FILES
+    src/service_main.cpp
+    src/Calculator.cpp
+    src/Checker.cpp
+    src/Logger.cpp
+    src/DatabaseProcessor.cpp
+    src/CalculatorException.cpp
+    src/CalculationProcessor.cpp
+    src/CalculatorServer.cpp
 )
 
 include(FetchContent)
@@ -90,9 +102,21 @@ FetchContent_Declare(
     GIT_TAG v1.14.1
 )
 
+FetchContent_Declare(
+  cppzmq
+  GIT_REPOSITORY https://github.com/zeromq/cppzmq.git
+  GIT_TAG v4.10.0
+)
+
+set(CPPZMQ_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(CPPZMQ_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CPPZMQ_INSTALL OFF CACHE BOOL "" FORCE)
+
+FetchContent_MakeAvailable(cppzmq)
 FetchContent_MakeAvailable(mathLib)
 FetchContent_MakeAvailable(json)
 FetchContent_MakeAvailable(spdlog)
+
 add_subdirectory(cache)
 add_executable(calc ${SOURCE_FILES})
 
@@ -108,6 +132,23 @@ target_link_libraries(calc
 
 install(TARGETS calc RUNTIME DESTINATION bin)
 
+add_executable(calc_service ${SERVICE_SOURCE_FILES})
+
+target_include_directories(calc_service PRIVATE include)
+
+target_link_libraries(calc_service
+    PRIVATE
+    mathLib
+    nlohmann_json::nlohmann_json
+    spdlog::spdlog
+    PostgreSQL::PostgreSQL
+    cache_lib
+    cppzmq
+)
+install(TARGETS calc_service RUNTIME DESTINATION bin)
+
+
+
 if(BUILD_TESTING)
     FetchContent_MakeAvailable(googletest)
     include(GoogleTest)
@@ -115,6 +156,8 @@ if(BUILD_TESTING)
     add_executable(calc_tests
         ${TEST_SOURCE_FILES}
         ${TEST_APP_SOURCE_FILES}
+            src/CalculationProcessor.cpp
+            src/CalculatorServer.cpp
     )
     find_package(PostgreSQL REQUIRED)
     target_include_directories(calc_tests PRIVATE include)
@@ -126,6 +169,7 @@ if(BUILD_TESTING)
         GTest::gtest_main
         PostgreSQL::PostgreSQL
         cache_lib
+        cppzmq
     )
     gtest_discover_tests(calc_tests)
 endif()
@@ -162,3 +206,24 @@ if(CLANG_FORMAT AND CLANG_TIDY)
         add_dependencies(calc_tests format)
     endif()
 endif()
+
+
+install(FILES packaging/calculator.service
+    DESTINATION lib/systemd/system
+)
+
+install(FILES packaging/calculator.env
+    DESTINATION etc/calculator
+)
+
+set(CPACK_GENERATOR "DEB")
+set(CPACK_PACKAGE_NAME "calculator-service")
+set(CPACK_PACKAGE_VERSION "1.0.0")
+set(CPACK_PACKAGE_CONTACT "petr.chizhikov@bk.ru")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "student")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS "libpq5, libzmq5")
+set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+    "${CMAKE_CURRENT_SOURCE_DIR}/packaging/postinst;${CMAKE_CURRENT_SOURCE_DIR}/packaging/prerm"
+)
+
+include(CPack)

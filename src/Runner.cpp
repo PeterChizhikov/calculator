@@ -5,9 +5,10 @@ Runner::Runner(int argc, char **argv) : numberOfInputArgs(argc), inputString(arg
 void Runner::run() {
     Logger::getInstance().info("Application started");
     std::string operationId;
-    std::unique_ptr<DatabaseProcessor> dbprocessor = std::make_unique<DatabaseProcessor>();
+    std::unique_ptr<DatabaseProcessor> dbprocessor;
     MathInfo info;
     try {
+        dbprocessor = std::make_unique<DatabaseProcessor>();
         info = Parser::parseValues(numberOfInputArgs, inputString);
         Checker::checkValues(info);
         const std::vector<MathInfo> savedCalculations = dbprocessor->getAllCalculations();
@@ -28,10 +29,11 @@ void Runner::run() {
         }
         Printer::printValues(info);
         Logger::getInstance().info("Application finished successfully");
-    } catch (const CalculatorException &e) {
-        Logger::getInstance().error(std::string("Application finished with error: ") + e.what());
-        dbprocessor->recordResult(info, operationId,
-                                  std::string("Application finished with error: ") + e.what(),
-                                  e.getErrorCode());
+    } catch (const std::exception &e) {
+    Logger::getInstance().error(std::string("Application finished with error: ") + e.what());
+
+    if (!operationId.empty()) {
+        dbprocessor->recordResult(info, operationId, e.what(), -1);
     }
+}
 }
